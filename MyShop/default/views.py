@@ -3,7 +3,7 @@ from django.db.models import Max, Min, Count, Avg, Q
 from django.core.paginator import Paginator
 from .models import Basket, Product, User
 from django.contrib import messages
-from .forms import RegisterForm
+from .forms import RegisterForm, AddProduct
 
 def home(request):
     products = Product.objects.all()
@@ -122,3 +122,21 @@ def register(request):
         form = RegisterForm()
     
     return render(request, 'register.html', {'form': form})
+
+def add_product(request):
+    if request.method == 'POST':
+        form = AddProduct(request.POST)
+        if form.is_valid():
+            Product.objects.create(
+                name=form.cleaned_data['name'],
+                description=form.cleaned_data['description'],
+                price=form.cleaned_data['price'],
+                stock=form.cleaned_data['stock'],
+                rating=form.cleaned_data['rating']
+            )
+            messages.success(request, 'Продукт успішно додано!')
+            return redirect('home')
+    else:
+        form = AddProduct()
+    
+    return render(request, 'add_product.html', {'form': form})
