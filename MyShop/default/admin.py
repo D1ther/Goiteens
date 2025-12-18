@@ -1,18 +1,19 @@
 from django.contrib import admin
 
-from .models import Person, School, SchoolGroup
+from .models import Product, Basket, BasketItem
 
-@admin.register(Person)
-class PersonAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'email')
-    search_fields = ('first_name', 'last_name', 'email')
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'stock')
+    search_fields = ('name', 'description')
+    list_filter = ('price',)
 
-@admin.register(School)
-class SchoolAdmin(admin.ModelAdmin):
-    list_display = ('school_name', 'address')
-    search_fields = ('school_name', 'address')
+@admin.register(Basket)
+class BasketAdmin(admin.ModelAdmin):
+    list_display = ('id', 'created_at')
+    ordering = ('-created_at',)
 
-@admin.register(SchoolGroup)
-class SchoolGroupAdmin(admin.ModelAdmin):
-    list_display = ('group_name', 'school')
-    search_fields = ('group_name',)
+@admin.register(BasketItem)
+class BasketItemAdmin(admin.ModelAdmin):
+    list_display = ('basket', 'product', 'quantity', 'added_at')
+    list_filter = ('added_at',)

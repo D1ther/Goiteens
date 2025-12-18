@@ -139,36 +139,38 @@
             border: 2px solid #667eea;
         }
         
-        .persons-list {
+        .products-list {
             background: #f9f9f9;
             border-radius: 10px;
             padding: 20px;
             margin-top: 20px;
         }
         
-        .person-item {
+        .product-item {
             background: white;
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 8px;
             border-left: 4px solid #667eea;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .person-item:last-child {
+        .product-item:last-child {
             margin-bottom: 0;
         }
         
-        .person-name {
+        .product-name {
             font-weight: bold;
             color: #667eea;
             font-size: 16px;
-            margin-bottom: 5px;
         }
         
-        .person-email {
-            color: #666;
-            font-size: 14px;
+        .product-price {
+            color: #28a745;
+            font-weight: bold;
         }
         
         .contact-section {
@@ -206,6 +208,31 @@
             font-style: italic;
             padding: 20px;
             text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-text {
+            font-size: 12px;
         }
     </style>
 </head>
@@ -264,17 +291,55 @@
                 <span class="interest-tag">🔐 Кібербезпека</span>
             </div>
             
-            <div class="section-title">👥 Люди в системі</div>
-            <div class="persons-list">
-                {% if persons %}
-                    {% for person in persons %}
-                        <div class="person-item">
-                            <div class="person-name">{{ person.first_name }} {{ person.last_name }}</div>
-                            <div class="person-email">📧 {{ person.email }}</div>
+            <div class="section-title">📊 Статистика товарів</div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number">{{ total_products }}</div>
+                    <div class="stat-text">Всього товарів</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">{{ max_price }} грн</div>
+                    <div class="stat-text">Макс ціна</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">{{ min_price }} грн</div>
+                    <div class="stat-text">Мін ціна</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">{{ avg_price|floatformat:0 }} грн</div>
+                    <div class="stat-text">Середня</div>
+                </div>
+            </div>
+            
+            <div class="section-title">💎 Дорогі товари (вище середньої ціни)</div>
+            <div class="products-list">
+                {% if expensive_products %}
+                    {% for product in expensive_products %}
+                        <div class="product-item">
+                            <div>
+                                <div class="product-name">{{ product.name }}</div>
+                            </div>
+                            <div class="product-price">{{ product.price }} грн</div>
                         </div>
                     {% endfor %}
                 {% else %}
-                    <div class="empty-message">Немає осіб у системі</div>
+                    <div class="empty-message">Немає дорогих товарів</div>
+                {% endif %}
+            </div>
+            
+            <div class="section-title">🛒 Доступні товари (запас > 10)</div>
+            <div class="products-list">
+                {% if high_price_and_stock %}
+                    {% for product in high_price_and_stock %}
+                        <div class="product-item">
+                            <div>
+                                <div class="product-name">{{ product.name }}</div>
+                            </div>
+                            <div class="product-price">{{ product.stock }} шт</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-message">Немає товарів з великим запасом</div>
                 {% endif %}
             </div>
         </div>

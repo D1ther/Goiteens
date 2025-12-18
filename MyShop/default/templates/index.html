@@ -109,9 +109,18 @@
             margin-bottom: 10px;
         }
         
-        .product-rating {
-            color: #ffc107;
+        .product-stock {
+            color: #28a745;
+            font-size: 14px;
             margin-bottom: 10px;
+        }
+        
+        .product-stock.low {
+            color: #ffc107;
+        }
+        
+        .product-stock.out {
+            color: #dc3545;
         }
         
         .btn {
@@ -127,6 +136,11 @@
         
         .btn:hover {
             background-color: #764ba2;
+        }
+        
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
         
         footer {
@@ -145,9 +159,9 @@
                 <h1>⚡ ElectroShop</h1>
                 <input type="text" class="search-bar" placeholder="Пошук товарів...">
                 <div class="nav">
-                    <a href="#">Каталог</a>
+                    <a href="/tables">Каталог</a>
                     <a href="#">Кошик</a>
-                    <a href="#">Контакти</a>
+                    <a href="/about">Про нас</a>
                 </div>
             </div>
         </div>
@@ -157,65 +171,27 @@
         <h2 style="margin: 40px 0 20px;">Популярні товари</h2>
         
         <div class="products">
-            <div class="product-card">
-                <div class="product-image">📱</div>
-                <div class="product-info">
-                    <div class="product-name">Смартфон Pro Max</div>
-                    <div class="product-price">15,999 грн</div>
-                    <div class="product-rating">★★★★★ (250 відзивів)</div>
-                    <button class="btn">До кошика</button>
+            {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image">📦</div>
+                    <div class="product-info">
+                        <div class="product-name">{{ product.name }}</div>
+                        <div class="product-price">{{ product.price }} грн</div>
+                        <div class="product-stock {% if product.stock == 0 %}out{% elif product.stock < 5 %}low{% endif %}">
+                            {% if product.stock > 0 %}
+                                ✓ В наявності ({{ product.stock }} шт)
+                            {% else %}
+                                ✗ Немає в наявності
+                            {% endif %}
+                        </div>
+                        <button class="btn" {% if product.stock == 0 %}disabled{% endif %}>
+                            {% if product.stock > 0 %}До кошика{% else %}Немає в наявності{% endif %}
+                        </button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="product-card">
-                <div class="product-image">💻</div>
-                <div class="product-info">
-                    <div class="product-name">Ноутбук UltraBook</div>
-                    <div class="product-price">24,999 грн</div>
-                    <div class="product-rating">★★★★☆ (180 відзивів)</div>
-                    <button class="btn">До кошика</button>
-                </div>
-            </div>
-            
-            <div class="product-card">
-                <div class="product-image">🎧</div>
-                <div class="product-info">
-                    <div class="product-name">Навушники Wireless</div>
-                    <div class="product-price">3,499 грн</div>
-                    <div class="product-rating">★★★★★ (420 відзивів)</div>
-                    <button class="btn">До кошика</button>
-                </div>
-            </div>
-            
-            <div class="product-card">
-                <div class="product-image">⌚</div>
-                <div class="product-info">
-                    <div class="product-name">Smart Watch Pro</div>
-                    <div class="product-price">5,999 грн</div>
-                    <div class="product-rating">★★★★☆ (320 відзивів)</div>
-                    <button class="btn">До кошика</button>
-                </div>
-            </div>
-            
-            <div class="product-card">
-                <div class="product-image">📷</div>
-                <div class="product-info">
-                    <div class="product-name">Камера 4K Ultra</div>
-                    <div class="product-price">18,499 грн</div>
-                    <div class="product-rating">★★★★★ (150 відзивів)</div>
-                    <button class="btn">До кошика</button>
-                </div>
-            </div>
-            
-            <div class="product-card">
-                <div class="product-image">🎮</div>
-                <div class="product-info">
-                    <div class="product-name">Консоль Gaming</div>
-                    <div class="product-price">12,999 грн</div>
-                    <div class="product-rating">★★★★★ (580 відзивів)</div>
-                    <button class="btn">До кошика</button>
-                </div>
-            </div>
+            {% empty %}
+                <p style="grid-column: 1/-1; text-align: center; padding: 40px;">Товарів не знайдено</p>
+            {% endfor %}
         </div>
     </main>
     

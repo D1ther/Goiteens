@@ -1,25 +1,29 @@
 from django.db import models
 
-class Person(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    email = models.EmailField(unique=True)
+class Product(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.name
     
-class School(models.Model):
-    school_name = models.CharField(max_length=100)
-    address = models.CharField(max_length=200)
-    persons = models.ManyToManyField(Person, related_name='schools')
+class Basket(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    products = models.ManyToManyField(Product, through='BasketItem')
 
     def __str__(self):
-        return self.school_name
+        return f"Basket {self.id} created at {self.created_at}"
+
+class BasketItem(models.Model):
+    basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.product.name} x{self.quantity}"
     
-class SchoolGroup(models.Model):
-    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='groups')
-    group_name = models.CharField(max_length=50)
-    members = models.ManyToManyField(Person, related_name='groups')
-
-    def __str__(self):
-        return self.group_name
+    class Meta:
+        unique_together = ('basket', 'product')
