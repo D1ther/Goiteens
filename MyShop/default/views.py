@@ -5,3 +5,6 @@ def home(request):
 
 def about(request):
     return render(request, 'about_me.html')
+
+def tables(request):
+    return render(request, 'tables.html')
