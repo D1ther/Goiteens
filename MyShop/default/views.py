@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Max, Min, Count, Avg, Q
-from .models import Basket, Product
+from .models import Basket, Product, User
+from django.contrib import messages
+from .forms import RegisterForm
 
 def home(request):
     products = Product.objects.all()
@@ -80,3 +82,33 @@ def get_products_statistics(request):
     }
     
     return render(request, 'statistics.html', {'stats': stats})
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            
+            # Перевірка чи користувач вже існує
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Це ім\'я користувача вже зайнято!')
+                return render(request, 'register.html', {'form': form})
+            
+            if User.objects.filter(email=email).exists():
+                messages.error(request, 'Цей email вже зареєстрований!')
+                return render(request, 'register.html', {'form': form})
+            
+            # Створення користувача
+            user = User.objects.create(username=username, email=email)
+            messages.success(request, 'Реєстрація успішна! Тепер ви можете увійти.')
+            return redirect('home')
+        else:
+            # Виведення помилок форми
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{error}')
+    else:
+        form = RegisterForm()
+    
+    return render(request, 'register.html', {'form': form})
