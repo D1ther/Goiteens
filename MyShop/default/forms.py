@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Product
+from .models import User, Product, Comment
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -28,4 +28,11 @@ class AddProduct(forms.Form):
 
     def clean(self):
         return super().clean()
+    
+class AddComment(forms.Form):
+    content = forms.CharField(widget=forms.Textarea, label='Коментар')
+
+    class Meta:
+        model = Comment
+        fields = ['content']
     

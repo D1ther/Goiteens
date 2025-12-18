@@ -32,6 +32,7 @@
         align-items: center;
         justify-content: center;
         font-size: 48px;
+        cursor: pointer;
     }
     
     .product-info {
@@ -42,6 +43,13 @@
         font-size: 16px;
         font-weight: bold;
         margin-bottom: 10px;
+        cursor: pointer;
+        color: #333;
+        transition: color 0.3s;
+    }
+    
+    .product-name:hover {
+        color: #667eea;
     }
     
     .product-price {
@@ -93,9 +101,13 @@
 <div class="products">
     {% for product in products %}
         <div class="product-card">
-            <div class="product-image">📦</div>
+            <a href="{% url 'product_detail' product.id %}" style="text-decoration: none; color: inherit;">
+                <div class="product-image">📦</div>
+            </a>
             <div class="product-info">
-                <div class="product-name">{{ product.name }}</div>
+                <a href="{% url 'product_detail' product.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="product-name">{{ product.name }}</div>
+                </a>
                 <div class="product-price">{{ product.price|default:"N/A" }} грн</div>
                 <div class="product-stock {% if product.stock == 0 %}out{% elif product.stock < 5 %}low{% endif %}">
                     {% if product.stock > 0 %}
@@ -107,7 +119,7 @@
                 <form method="post" action="{% url 'add_to_basket' product.id %}">
                     {% csrf_token %}
                     <button type="submit" class="btn" {% if product.stock == 0 %}disabled{% endif %}>
-                        {% if product.stock > 0 %}До кошика{% else %}Немає в наявності{% endif %}
+                        {% if product.stock > 0 %}🛒 До кошика{% else %}Немає в наявності{% endif %}
                     </button>
                 </form>
             </div>

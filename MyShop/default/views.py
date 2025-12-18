@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.db.models import Max, Min, Count, Avg, Q
 from django.core.paginator import Paginator
-from .models import Basket, Product, User, BasketItem
+from .models import Basket, Product, User, BasketItem, Comment
 from django.contrib import messages
-from .forms import RegisterForm, AddProduct
+from .forms import RegisterForm, AddProduct, AddComment
 
 def home(request):
     products = Product.objects.all()
@@ -265,3 +265,46 @@ def update_basket_item(request, item_id):
         messages.error(request, 'Товар не знайдено!')
     
     return redirect('view_basket')
+
+
+def product_detail(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        messages.error(request, 'Продукт не знайдено!')
+        return redirect('home')
+    
+    context = {
+        'product': product
+    }
+    
+    return render(request, 'product_detail.html', context)
+
+
+def add_comment(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        messages.error(request, 'Продукт не знайдено!')
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = AddComment(request.POST)
+        if form.is_valid():
+            user, created = User.objects.get_or_create(
+                username='anonymous',
+                defaults={'email': 'anonymous@example.com'}
+            )
+            
+            comment = Comment.objects.create(
+                product=product,
+                user=user,
+                content=form.cleaned_data['content']
+            )
+            product.comments.add(comment)
+            messages.success(request, 'Коментар успішно додано!')
+            return redirect('product_detail', product_id=product.id)
+    else:
+        form = AddComment()
+    
+    return redirect('product_detail', product_id=product.id)

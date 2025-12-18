@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - ElectroShop{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-detail-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .product-detail {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 400px;
+        background: #e0e0e0;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 120px;
+    }
+    
+    .product-info h1 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    
+    .product-info .price {
+        font-size: 28px;
+        color: #667eea;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    
+    .product-info .rating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+    
+    .product-info .stock {
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+    
+    .stock.available {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .stock.low {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .stock.unavailable {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .product-description {
+        margin-bottom: 30px;
+        line-height: 1.6;
+        color: #555;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-primary {
+        flex: 1;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+        flex: 1;
+        padding: 15px;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        transform: translateY(-2px);
+    }
+    
+    .comments-section {
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 2px solid #e0e0e0;
+    }
+    
+    .comments-section h2 {
+        font-size: 24px;
+        margin-bottom: 30px;
+        color: #333;
+    }
+    
+    .comment-form {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #333;
+    }
+    
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 5px;
+        font-family: inherit;
+        font-size: 14px;
+        transition: border-color 0.3s;
+        resize: vertical;
+        min-height: 100px;
+    }
+    
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .submit-btn {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .comments-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .comment-item {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .comment-author {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .comment-date {
+        color: #999;
+        font-size: 14px;
+    }
+    
+    .comment-content {
+        color: #555;
+        line-height: 1.6;
+    }
+    
+    .no-comments {
+        text-align: center;
+        padding: 40px 20px;
+        color: #999;
+    }
+    
+    .messages {
+        list-style: none;
+        margin-bottom: 20px;
+    }
+    
+    .messages li {
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+    
+    .messages .success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .messages .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .back-link {
+        margin-bottom: 20px;
+    }
+    
+    .back-link a {
+        color: #667eea;
+        text-decoration: none;
+        transition: opacity 0.3s;
+    }
+    
+    .back-link a:hover {
+        opacity: 0.8;
+    }
+    
+    @media (max-width: 768px) {
+        .product-detail {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <div class="back-link">
+        <a href="/">← Назад до товарів</a>
+    </div>
+    
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+    <div class="product-detail">
+        <div class="product-image">📦</div>
+        
+        <div class="product-info">
+            <h1>{{ product.name }}</h1>
+            
+            <div class="price">{{ product.price }} грн</div>
+            
+            <div class="rating">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= product.rating %}
+                        ★
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+                <span>({{ product.rating }}/5)</span>
+            </div>
+            
+            <div class="stock {% if product.stock > 5 %}available{% elif product.stock > 0 %}low{% else %}unavailable{% endif %}">
+                {% if product.stock > 5 %}
+                    ✓ В наявності ({{ product.stock }} шт)
+                {% elif product.stock > 0 %}
+                    ⚠ Залишилось мало ({{ product.stock }} шт)
+                {% else %}
+                    ✗ Немає в наявності
+                {% endif %}
+            </div>
+            
+            <div class="product-description">
+                <h3>Опис:</h3>
+                <p>{{ product.description }}</p>
+            </div>
+            
+            <div class="action-buttons">
+                <form method="post" action="{% url 'add_to_basket' product.id %}" style="width: 100%;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-primary" {% if product.stock == 0 %}disabled{% endif %}>
+                        {% if product.stock > 0 %}🛒 Додати до кошика{% else %}Немає в наявності{% endif %}
+                    </button>
+                </form>
+                <a href="/" class="btn-secondary">← Назад</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="comments-section">
+        <h2>💬 Коментарі ({{ product.comments.count }})</h2>
+        
+        <div class="comment-form">
+            <h3 style="margin-bottom: 20px;">Додати коментар</h3>
+            <form method="post" action="{% url 'add_comment' product.id %}" novalidate>
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="content">Ваш коментар:</label>
+                    <textarea id="content" name="content" placeholder="Напишіть ваш коментар тут..." required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Опублікувати коментар</button>
+            </form>
+        </div>
+        
+        <div class="comments-list">
+            {% if product.comments.all %}
+                {% for comment in product.comments.all %}
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <span class="comment-author">{{ comment.user.username }}</span>
+                            <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <div class="comment-content">{{ comment.content }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-comments">
+                    <p>Коментарів поки немає. Будьте першим!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

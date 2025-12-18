@@ -16,16 +16,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
 
-    
 class Basket(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     products = models.ManyToManyField(Product, through='BasketItem')
 
     def __str__(self):
         return f"Basket {self.id} created at {self.created_at}"
-    
+
 class BasketItem(models.Model):
     basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -40,11 +38,12 @@ class BasketItem(models.Model):
     
     class Meta:
         unique_together = ('basket', 'product')
-    added_at = models.DateTimeField(auto_now_add=True)
+
+class Comment(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product.name} x{self.quantity}"
-    
-    class Meta:
-        unique_together = ('basket', 'product')
-
+        return f"Comment by {self.user.username} on {self.product.name}"
