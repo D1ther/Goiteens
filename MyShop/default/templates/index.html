@@ -1,202 +1,148 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElectroShop - Магазин електроніки</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        h1 {
-            font-size: 28px;
-        }
-        
-        .nav {
-            display: flex;
-            gap: 30px;
-        }
-        
-        .nav a {
-            color: white;
-            text-decoration: none;
-            transition: opacity 0.3s;
-        }
-        
-        .nav a:hover {
-            opacity: 0.8;
-        }
-        
-        .search-bar {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            width: 300px;
-        }
-        
-        .products {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
-        }
-        
-        .product-card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-        }
-        
-        .product-info {
-            padding: 15px;
-        }
-        
-        .product-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .product-price {
-            color: #667eea;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .product-stock {
-            color: #28a745;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        
-        .product-stock.low {
-            color: #ffc107;
-        }
-        
-        .product-stock.out {
-            color: #dc3545;
-        }
-        
-        .btn {
-            background-color: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s;
-        }
-        
-        .btn:hover {
-            background-color: #764ba2;
-        }
-        
-        .btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-            margin-top: 60px;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <h1>⚡ ElectroShop</h1>
-                <input type="text" class="search-bar" placeholder="Пошук товарів...">
-                <div class="nav">
-                    <a href="/tables">Каталог</a>
-                    <a href="#">Кошик</a>
-                    <a href="/about">Про нас</a>
+{% extends 'base.html' %}
+
+{% block title %}ElectroShop - Магазин електроніки{% endblock %}
+
+{% block extra_css %}
+<style>
+    .products {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 40px 0;
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 200px;
+        background: #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+    }
+    
+    .product-info {
+        padding: 15px;
+    }
+    
+    .product-name {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .product-price {
+        color: #667eea;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .product-stock {
+        color: #28a745;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    .product-stock.low {
+        color: #ffc107;
+    }
+    
+    .product-stock.out {
+        color: #dc3545;
+    }
+    
+    .btn {
+        background-color: #667eea;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
+    
+    .btn:hover {
+        background-color: #764ba2;
+    }
+    
+    .btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 style="margin: 40px 0 20px;">Популярні товари</h2>
+
+<div class="products">
+    {% for product in products %}
+        <div class="product-card">
+            <div class="product-image">📦</div>
+            <div class="product-info">
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-price">{{ product.price|default:"N/A" }} грн</div>
+                <div class="product-stock {% if product.stock == 0 %}out{% elif product.stock < 5 %}low{% endif %}">
+                    {% if product.stock > 0 %}
+                        ✓ В наявності ({{ product.stock }} шт)
+                    {% else %}
+                        ✗ Немає в наявності
+                    {% endif %}
                 </div>
+                <button class="btn" {% if product.stock == 0 %}disabled{% endif %}>
+                    {% if product.stock > 0 %}До кошика{% else %}Немає в наявності{% endif %}
+                </button>
             </div>
         </div>
-    </header>
-    
-    <main class="container">
-        <h2 style="margin: 40px 0 20px;">Популярні товари</h2>
-        
-        <div class="products">
-            {% for product in products %}
-                <div class="product-card">
-                    <div class="product-image">📦</div>
-                    <div class="product-info">
-                        <div class="product-name">{{ product.name }}</div>
-                        <div class="product-price">{{ product.price }} грн</div>
-                        <div class="product-stock {% if product.stock == 0 %}out{% elif product.stock < 5 %}low{% endif %}">
-                            {% if product.stock > 0 %}
-                                ✓ В наявності ({{ product.stock }} шт)
-                            {% else %}
-                                ✗ Немає в наявності
-                            {% endif %}
-                        </div>
-                        <button class="btn" {% if product.stock == 0 %}disabled{% endif %}>
-                            {% if product.stock > 0 %}До кошика{% else %}Немає в наявності{% endif %}
-                        </button>
-                    </div>
-                </div>
-            {% empty %}
-                <p style="grid-column: 1/-1; text-align: center; padding: 40px;">Товарів не знайдено</p>
-            {% endfor %}
-        </div>
-    </main>
-    
-    <footer>
-        <p>&copy; 2025 ElectroShop. Усі права захищені.</p>
-    </footer>
-</body>
-</html>
+    {% empty %}
+        <p style="grid-column: 1/-1; text-align: center; padding: 40px;">Товарів не знайдено</p>
+    {% endfor %}
+</div>
+
+{% if page_obj %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">« Перша</a>
+        <a href="?page={{ page_obj.previous_page_number }}">< Попередня</a>
+    {% else %}
+        <span class="disabled">« Перша</span>
+        <span class="disabled">< Попередня</span>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="current">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Наступна ></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Остання »</a>
+    {% else %}
+        <span class="disabled">Наступна ></span>
+        <span class="disabled">Остання »</span>
+    {% endif %}
+</div>
+
+<p style="text-align: center; color: #666;">
+    Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}
+</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ElectroShop{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        h1 {
+            font-size: 28px;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        
+        .nav a:hover {
+            opacity: 0.8;
+        }
+        
+        .search-bar {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            width: 300px;
+        }
+        
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 60px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 40px 0;
+        }
+        
+        .pagination a, .pagination span {
+            padding: 10px 15px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+        
+        .pagination a:hover {
+            background-color: #667eea;
+            color: white;
+        }
+        
+        .pagination .current {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>⚡ ElectroShop</h1>
+                <input type="text" class="search-bar" placeholder="Пошук товарів...">
+                <div class="nav">
+                    <a href="/">Головна</a>
+                    <a href="/tables">Каталог</a>
+                    <a href="#">Кошик</a>
+                    <a href="/about">Про нас</a>
+                    <a href="/register">Реєстрація</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 ElectroShop. Усі права захищені.</p>
+    </footer>
+</body>
+</html>

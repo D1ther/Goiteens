@@ -1,219 +1,226 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Реєстрація - ElectroShop</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% extends 'base.html' %}
+
+{% block title %}Реєстрація - ElectroShop{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    
+    main {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .form-container {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    h2 {
+        text-align: center;
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 28px;
+    }
+    
+    .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 14px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    
+    input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+        font-family: inherit;
+    }
+    
+    input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    input::placeholder {
+        color: #999;
+    }
+    
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:active {
+        transform: translateY(0);
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 13px;
+        margin-top: 5px;
+        padding: 8px 12px;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+    }
+    
+    .success-message {
+        color: #155724;
+        font-size: 13px;
+        padding: 12px 15px;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+    
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .login-link a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+    
+    .logo {
+        text-align: center;
+        font-size: 40px;
+        margin-bottom: 15px;
+    }
+    
+    header {
+        display: none !important;
+    }
+    
+    footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="logo">⚡</div>
+    <h2>ElectroShop</h2>
+    <p class="subtitle">Створіть новий акаунт</p>
+    
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="success-message">✓ {{ message }}</div>
+            {% else %}
+                <div class="error-message">✗ {{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+    <form method="POST">
+        {% csrf_token %}
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .form-container {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-        }
-        
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-            font-family: inherit;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        input::placeholder {
-            color: #999;
-        }
-        
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .error-message {
-            color: #dc3545;
-            font-size: 13px;
-            margin-top: 5px;
-            padding: 8px 12px;
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-radius: 4px;
-        }
-        
-        .success-message {
-            color: #155724;
-            font-size: 13px;
-            padding: 12px 15px;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        
-        .login-link {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .login-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .logo {
-            text-align: center;
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-    </style>
-</head>
-<body>
-    <div class="form-container">
-        <div class="logo">⚡</div>
-        <h1>ElectroShop</h1>
-        <p class="subtitle">Створіть новий акаунт</p>
-        
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == 'success' %}
-                    <div class="success-message">✓ {{ message }}</div>
-                {% else %}
-                    <div class="error-message">✗ {{ message }}</div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-        
-        <form method="POST">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    {% for error in form.username.errors %}
-                        <div class="error-message">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-                {{ form.email }}
-                {% if form.email.errors %}
-                    {% for error in form.email.errors %}
-                        <div class="error-message">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
-                {{ form.password }}
-                {% if form.password.errors %}
-                    {% for error in form.password.errors %}
-                        <div class="error-message">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.password_confirm.id_for_label }}">{{ form.password_confirm.label }}</label>
-                {{ form.password_confirm }}
-                {% if form.password_confirm.errors %}
-                    {% for error in form.password_confirm.errors %}
-                        <div class="error-message">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            
-            {% if form.non_field_errors %}
-                {% for error in form.non_field_errors %}
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
                     <div class="error-message">{{ error }}</div>
                 {% endfor %}
             {% endif %}
-            
-            <button type="submit">Зареєструватися</button>
-        </form>
-        
-        <div class="login-link">
-            Вже маєте акаунт? <a href="/">Повернутися на головну</a>
         </div>
+        
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.password_confirm.id_for_label }}">{{ form.password_confirm.label }}</label>
+            {{ form.password_confirm }}
+            {% if form.password_confirm.errors %}
+                {% for error in form.password_confirm.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <button type="submit">Зареєструватися</button>
+    </form>
+    
+    <div class="login-link">
+        Вже маєте акаунт? <a href="/">Повернутися на головну</a>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

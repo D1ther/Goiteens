@@ -1,11 +1,13 @@
-from django.urls import path, include
-from . import views
+from django.contrib import admin
+from django.urls import path
+from default import views
 
 urlpatterns = [
-    path('', views.home),
-    path('about/', views.about),
-    path('tables/', views.tables),
-    path('add_to_basket/<int:product_id>/', views.add_to_basket),
-    path('stats/', views.get_products_statistics),
-    path('register/', views.register),
+    path('admin/', admin.site.urls),
+    path('', views.home, name='home'),
+    path('tables/', views.tables, name='tables'),
+    path('about/', views.about, name='about'),
+    path('register/', views.register, name='register'),
+    path('add-to-basket/<int:product_id>/', views.add_to_basket, name='add_to_basket'),
+    path('statistics/', views.get_products_statistics, name='statistics'),
 ]
