@@ -72,6 +72,8 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 5px;
             transition: background 0.3s;
+            text-decoration: none;
+            color: white;
         }
         
         .basket-link:hover {
@@ -121,6 +123,53 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        .form-error-highlight {
+            border-color: #dc3545 !important;
+            background-color: #fff8f8 !important;
+        }
+
+        .form-success {
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loader {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        .loader.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -148,5 +197,156 @@
     <footer>
         <p>&copy; 2025 ElectroShop. Усі права захищені.</p>
     </footer>
+
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // Показування лоадера при відправці форми
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const loader = document.getElementById('loader');
+                if (loader) {
+                    loader.classList.add('show');
+                }
+            });
+        });
+
+        // Валідація форм
+        function validateForm(form) {
+            let isValid = true;
+            const inputs = form.querySelectorAll('input[required], textarea[required]');
+            
+            inputs.forEach(input => {
+                input.classList.remove('form-error-highlight');
+                
+                if (!input.value.trim()) {
+                    input.classList.add('form-error-highlight');
+                    isValid = false;
+                }
+
+                // Email валідація
+                if (input.type === 'email' && input.value) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(input.value)) {
+                        input.classList.add('form-error-highlight');
+                        isValid = false;
+                    }
+                }
+
+                // Число валідація
+                if (input.type === 'number' && input.value) {
+                    if (isNaN(input.value) || input.value < 0) {
+                        input.classList.add('form-error-highlight');
+                        isValid = false;
+                    }
+                }
+            });
+
+            return isValid;
+        }
+
+        // Атач валідацію до всіх форм
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!validateForm(form)) {
+                    e.preventDefault();
+                    alert('⚠️ Будь ласка, заповніть усі обов\'язкові поля коректно');
+                }
+            });
+
+            // Real-time валідація
+            const inputs = form.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    this.classList.remove('form-error-highlight');
+                    
+                    if (this.hasAttribute('required') && !this.value.trim()) {
+                        this.classList.add('form-error-highlight');
+                    }
+                });
+
+                input.addEventListener('input', function() {
+                    this.classList.remove('form-error-highlight');
+                });
+            });
+        });
+
+        // Функція для показування повідомлень
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                border-radius: 8px;
+                background-color: ${type === 'success' ? '#d4edda' : '#f8d7da'};
+                color: ${type === 'success' ? '#155724' : '#721c24'};
+                border: 1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'};
+                z-index: 10000;
+                animation: slideIn 0.3s ease-in-out;
+                font-weight: 500;
+                max-width: 400px;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease-in-out reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Приховування лоадера після завантаження
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader');
+            if (loader) {
+                loader.classList.remove('show');
+            }
+        });
+
+        // Підтвердження видалення
+        function confirmDelete(message = 'Ви впевнені?') {
+            return confirm(message);
+        }
+
+        // Формат цін
+        function formatPrice(price) {
+            return new Intl.NumberFormat('uk-UA', {
+                style: 'currency',
+                currency: 'UAH'
+            }).format(price);
+        }
+
+        // Пошук у реальному часі
+        const searchBar = document.querySelector('.search-bar');
+        if (searchBar) {
+            searchBar.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const productCards = document.querySelectorAll('.product-card');
+                
+                productCards.forEach(card => {
+                    const productName = card.querySelector('.product-name')?.textContent.toLowerCase() || '';
+                    const isVisible = productName.includes(searchTerm);
+                    card.style.display = isVisible ? 'block' : 'none';
+                    card.style.opacity = isVisible ? '1' : '0.3';
+                });
+            });
+        }
+
+        // Контроль кількості в кошику
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                if (this.value < 1) {
+                    this.value = 1;
+                }
+                if (this.value > 999) {
+                    this.value = 999;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
