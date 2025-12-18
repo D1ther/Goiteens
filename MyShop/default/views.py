@@ -140,3 +140,43 @@ def add_product(request):
         form = AddProduct()
     
     return render(request, 'add_product.html', {'form': form})
+
+def edit_product(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        messages.error(request, 'Продукт не знайдено!')
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = AddProduct(request.POST)
+        if form.is_valid():
+            product.name = form.cleaned_data['name']
+            product.description = form.cleaned_data['description']
+            product.price = form.cleaned_data['price']
+            product.stock = form.cleaned_data['stock']
+            product.rating = form.cleaned_data['rating']
+            product.save()
+            messages.success(request, 'Продукт успішно оновлено!')
+            return redirect('home')
+    else:
+        form = AddProduct(initial={
+            'name': product.name,
+            'description': product.description,
+            'price': product.price,
+            'stock': product.stock,
+            'rating': product.rating
+        })
+    
+    return render(request, 'edit_product.html', {'form': form, 'product': product})
+
+
+def delete_product(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+        product.delete()
+        messages.success(request, 'Продукт успішно видалено!')
+    except Product.DoesNotExist:
+        messages.error(request, 'Продукт не знайдено!')
+    
+    return redirect('home')
