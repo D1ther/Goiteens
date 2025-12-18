@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Max, Min, Count, Avg, Q
 from django.core.paginator import Paginator
-from .models import Basket, Product, User
+from .models import Basket, Product, User, BasketItem
 from django.contrib import messages
 from .forms import RegisterForm, AddProduct
 
@@ -180,3 +180,88 @@ def delete_product(request, product_id):
         messages.error(request, 'Продукт не знайдено!')
     
     return redirect('home')
+
+
+def add_to_basket(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+        
+        # Отримуємо або створюємо кошик для сесії
+        basket_id = request.session.get('basket_id')
+        if basket_id:
+            try:
+                basket = Basket.objects.get(id=basket_id)
+            except Basket.DoesNotExist:
+                basket = Basket.objects.create()
+                request.session['basket_id'] = basket.id
+        else:
+            basket = Basket.objects.create()
+            request.session['basket_id'] = basket.id
+        
+        # Перевіряємо, чи товар вже в кошику
+        basket_item, created = BasketItem.objects.get_or_create(
+            basket=basket,
+            product=product,
+            defaults={'quantity': 1}
+        )
+        
+        if not created:
+            basket_item.quantity += 1
+            basket_item.save()
+        
+        messages.success(request, f'{product.name} додано до кошика!')
+    except Product.DoesNotExist:
+        messages.error(request, 'Товар не знайдено!')
+    
+    return redirect('home')
+
+def view_basket(request):
+    basket_id = request.session.get('basket_id')
+    basket_items = []
+    total_price = 0
+    total_items = 0
+    
+    if basket_id:
+        try:
+            basket = Basket.objects.get(id=basket_id)
+            basket_items = basket.basketitem_set.all()
+            total_price = sum(item.get_total_price() for item in basket_items)
+            total_items = sum(item.quantity for item in basket_items)
+        except Basket.DoesNotExist:
+            pass
+    
+    context = {
+        'basket_items': basket_items,
+        'total_price': total_price,
+        'total_items': total_items,
+    }
+    
+    return render(request, 'backet.html', context)
+
+def remove_from_basket(request, item_id):
+    try:
+        basket_item = BasketItem.objects.get(id=item_id)
+        product_name = basket_item.product.name
+        basket_item.delete()
+        messages.success(request, f'{product_name} видалено з кошика!')
+    except BasketItem.DoesNotExist:
+        messages.error(request, 'Товар не знайдено в кошику!')
+    
+    return redirect('view_basket')
+
+def update_basket_item(request, item_id):
+    try:
+        basket_item = BasketItem.objects.get(id=item_id)
+        if request.method == 'POST':
+            quantity = int(request.POST.get('quantity', 1))
+            if quantity > 0:
+                basket_item.quantity = quantity
+                basket_item.save()
+                messages.success(request, 'Кошик оновлено!')
+            else:
+                basket_item.delete()
+                messages.success(request, 'Товар видалено з кошика!')
+    except BasketItem.DoesNotExist:
+        messages.error(request, 'Товар не знайдено!')
+    
+    return redirect('view_basket')

@@ -44,6 +44,7 @@
         .nav {
             display: flex;
             gap: 30px;
+            align-items: center;
         }
         
         .nav a {
@@ -61,6 +62,24 @@
             border: none;
             border-radius: 5px;
             width: 300px;
+        }
+        
+        .basket-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .basket-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .basket-icon {
+            font-size: 20px;
         }
         
         footer {
@@ -113,10 +132,10 @@
                 <input type="text" class="search-bar" placeholder="Пошук товарів...">
                 <div class="nav">
                     <a href="/">Головна</a>
-                    <a href="/tables">Каталог</a>
-                    <a href="#">Кошик</a>
-                    <a href="/about">Про нас</a>
-                    <a href="/register">Реєстрація</a>
+                    <a href="/basket/" class="basket-link">
+                        <span class="basket-icon">🛒</span>
+                        <span>Кошик</span>
+                    </a>
                 </div>
             </div>
         </div>

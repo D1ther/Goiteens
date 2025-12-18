@@ -104,9 +104,12 @@
                         ✗ Немає в наявності
                     {% endif %}
                 </div>
-                <button class="btn" {% if product.stock == 0 %}disabled{% endif %}>
-                    {% if product.stock > 0 %}До кошика{% else %}Немає в наявності{% endif %}
-                </button>
+                <form method="post" action="{% url 'add_to_basket' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn" {% if product.stock == 0 %}disabled{% endif %}>
+                        {% if product.stock > 0 %}До кошика{% else %}Немає в наявності{% endif %}
+                    </button>
+                </form>
             </div>
         </div>
     {% empty %}

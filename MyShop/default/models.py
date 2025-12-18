@@ -17,17 +17,29 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+
+    
 class Basket(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     products = models.ManyToManyField(Product, through='BasketItem')
 
     def __str__(self):
         return f"Basket {self.id} created at {self.created_at}"
-
+    
 class BasketItem(models.Model):
     basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.product.name} x{self.quantity}"
+    
+    def get_total_price(self):
+        return self.product.price * self.quantity
+    
+    class Meta:
+        unique_together = ('basket', 'product')
     added_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
