@@ -139,6 +139,38 @@
             border: 2px solid #667eea;
         }
         
+        .persons-list {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .person-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .person-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .person-name {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .person-email {
+            color: #666;
+            font-size: 14px;
+        }
+        
         .contact-section {
             background: white;
             border-radius: 15px;
@@ -167,6 +199,13 @@
         .contact-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .empty-message {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
         }
     </style>
 </head>
@@ -223,6 +262,20 @@
                 <span class="interest-tag">📊 Аналіз даних</span>
                 <span class="interest-tag">🌍 Веб-розробка</span>
                 <span class="interest-tag">🔐 Кібербезпека</span>
+            </div>
+            
+            <div class="section-title">👥 Люди в системі</div>
+            <div class="persons-list">
+                {% if persons %}
+                    {% for person in persons %}
+                        <div class="person-item">
+                            <div class="person-name">{{ person.first_name }} {{ person.last_name }}</div>
+                            <div class="person-email">📧 {{ person.email }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-message">Немає осіб у системі</div>
+                {% endif %}
             </div>
         </div>
         
